@@ -14,11 +14,11 @@ class GameScreen:
         self.arr = []
         self.backgrounds=[]
 
-        self.background = pygame.image.load(r"pyweek\game\images\first_room.png")
+        self.background = pygame.image.load("images/first_room.png")
         self.backgrounds.append(self.background)
         self.background = pygame.transform.scale(self.background, (width, height))
 
-        key = pygame.image.load(r"pyweek\game\images\key.png")
+        key = pygame.image.load(r"images\key.png")
         self.key = pygame.transform.scale(key, (25, 30))
         self.battery=10000000
         self.used=0
@@ -28,20 +28,20 @@ class GameScreen:
         self.widthkey=25
         self.heightkey=30
 
-        powerbox = pygame.image.load(r"pyweek\game\images\power_box.png")
+        powerbox = pygame.image.load(r"images\power_box.png")
         self.powerbox = pygame.transform.scale(powerbox, (160, 200))
 
-        self.deathText = pygame.image.load(r"pyweek\game\images\death_text.png")
+        self.deathText = pygame.image.load(r"images\death_text.png")
         self.deathText = pygame.transform.scale(self.deathText, (604, 480))
 
-    def display(self,lighton,radius):
+    def display(self,lighton,radius,clicked):
         self.screen.fill([0, 0, 0])
 
         a, b = pygame.mouse.get_pos()
         # put objects onto the background before calling array3d()
-        if not self.gotkey:
-            self.background.blit(self.key, (self.xkey, self.ykey))
+        if not self.gotkey and clicked:
             self.background.blit(self.powerbox, (320, 180))
+            self.background.blit(self.key, (self.xkey, self.ykey))
             self.clickedkey(a,b)
 
         color = (255*self.used/self.battery, 255*(1-self.used/self.battery), 0)
@@ -72,6 +72,6 @@ class GameScreen:
     def clickedkey(self,a,b):
         if a>self.xkey and a<self.widthkey+self.xkey and b>self.ykey and b<self.heightkey+self.ykey:
             self.gotkey=1
-            self.background = pygame.image.load(r"pyweek\game\images\first_room.png")
+            self.background = pygame.image.load(r"images\first_room.png")
             self.background = pygame.transform.scale(self.background, (self.width, self.height))
             self.used /= 2
