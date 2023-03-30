@@ -18,6 +18,7 @@ class Game:
         self.is_playing = False
         self.lighton=1
         self.radius=30
+        self.clicked=0
     def run(self):
         while True:
             self.clock.tick(60)
@@ -41,12 +42,16 @@ class Game:
                         self.radius +=5
                     if event.button == 5 and self.radius>10 :
                         self.radius-=5
+                if event.button==1:
+                    self.clicked=1
+            else:
+                self.clicked=0
     def update(self):
         pass
 
     def draw(self):
         if self.is_playing:
-            self.game_screen.display(self.lighton,self.radius)
+            self.game_screen.display(self.lighton,self.radius,self.clicked)
         else:
             self.title_screen.display()
 

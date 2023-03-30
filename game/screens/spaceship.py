@@ -2,7 +2,7 @@
 import pygame
 import random
 
-pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067
+pi = 3.1415926535897932384626433832795028841971693993751 # 05820974944592307816406286208998628034825342117067
 
 class GameScreen:
     def __init__(self, width, height):
@@ -24,7 +24,7 @@ class GameScreen:
         self.used=0
         self.xkey=random.randint(0,self.width-30)
         self.ykey=random.randint(0,self.height-30)
-        self.gotkey=0
+        self.gotkey=False
         self.widthkey=25
         self.heightkey=30
 
@@ -34,15 +34,18 @@ class GameScreen:
         self.deathText = pygame.image.load(r"pyweek\game\images\death_text.png")
         self.deathText = pygame.transform.scale(self.deathText, (604, 480))
 
-    def display(self,lighton,radius):
+        self.inventory = [self.gotkey, False, False]
+
+    def display(self,lighton,radius,clicked):
         self.screen.fill([0, 0, 0])
 
         a, b = pygame.mouse.get_pos()
         # put objects onto the background before calling array3d()
-        if not self.gotkey:
-            self.background.blit(self.key, (self.xkey, self.ykey))
+        if not self.gotkey :
             self.background.blit(self.powerbox, (320, 180))
-            self.clickedkey(a,b)
+            self.background.blit(self.key, (self.xkey, self.ykey))
+            if clicked:
+                self.clickedkey(a,b)
 
         color = (255*self.used/self.battery, 255*(1-self.used/self.battery), 0)
 
@@ -71,7 +74,7 @@ class GameScreen:
 
     def clickedkey(self,a,b):
         if a>self.xkey and a<self.widthkey+self.xkey and b>self.ykey and b<self.heightkey+self.ykey:
-            self.gotkey=1
+            self.gotkey=True
             self.background = pygame.image.load(r"pyweek\game\images\first_room.png")
             self.background = pygame.transform.scale(self.background, (self.width, self.height))
             self.used /= 2
