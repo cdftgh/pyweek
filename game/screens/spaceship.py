@@ -39,12 +39,16 @@ class GameScreen:
         self.waittimes=0
 
         battery = pygame.image.load(r"pyweek\BersFork2\game\images\battery.png")
-        self.battery = pygame.transform.scale(battery, (35, 50))
+        self.battery_other = pygame.transform.scale(battery, (70, 52))
+        self.battery_spawn = False
+        self.pos = (random.randint(0, 520), random.randint(0, 400))
+        self.c, self.d = self.pos[0], self.pos[1]
 
     def display(self,lighton,radius,clicked):
         self.screen.fill([0, 0, 0])
 
         a, b = pygame.mouse.get_pos()
+        self.a, self.b = a, b
         # put objects onto the background before calling array3d()
         if not self.gotkey :
             self.background.blit(self.key, (self.xkey, self.ykey))
@@ -53,8 +57,15 @@ class GameScreen:
         else:
             if self.tentatives > 0:
                 self.turning((300, 200), 30, 60, (a, b))
+                self.battery_spawn = True
+
         color = (255*self.used/self.battery, 255*(1-self.used/self.battery), 0)
-        # battery place here
+        
+        if self.battery_spawn:
+            self.background.blit(self.battery_other, self.pos)
+            if self.battery_spawn:
+                if clicked:
+                    self.clickedbattery(self.a, self.b, self.c, self.d)
 
         # Drawing Rectangle
         pygame.draw.rect(self.screen, color, pygame.Rect(self.width*1/3, 0, self.width/3*(1-self.used/self.battery), 60))
@@ -104,3 +115,11 @@ class GameScreen:
         print(self.start)
 
         pass
+
+    def clickedbattery(self, a, b, c, d):
+        if a>c and a<70+c and b>d and b<52+d:
+            self.battery_spawn = False
+            self.used = 0
+            self.background = pygame.image.load(r"pyweek\BersFork2\game\images\first_room.png")
+            self.background = pygame.transform.scale(self.background, (self.width, self.height))
+            self.pos = (-100, -100)
