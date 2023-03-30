@@ -1,8 +1,8 @@
 
 import pygame
 import random
-
-pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067
+from mpmath import *
+pi = 3.1415926535897932384626433832795028841971693#99375105820974944592307816406286208998628034825342117067
 
 class GameScreen:
     def __init__(self, width, height):
@@ -33,26 +33,31 @@ class GameScreen:
 
         self.deathText = pygame.image.load(r"images\death_text.png")
         self.deathText = pygame.transform.scale(self.deathText, (604, 480))
+        self.prevangleis=0
+        self.tentatives=40
+        self.start=0
+        self.waittimes=0
 
     def display(self,lighton,radius,clicked):
         self.screen.fill([0, 0, 0])
 
         a, b = pygame.mouse.get_pos()
         # put objects onto the background before calling array3d()
-        if not self.gotkey and clicked:
+        if not self.gotkey :
             self.background.blit(self.powerbox, (320, 180))
             self.background.blit(self.key, (self.xkey, self.ykey))
-            self.clickedkey(a,b)
-
+            if clicked:
+                self.clickedkey(a,b)
+        else:
+            if self.tentatives > 0:
+                self.turning((300, 200), 30, 60, (a, b))
         color = (255*self.used/self.battery, 255*(1-self.used/self.battery), 0)
 
         # Drawing Rectangle
         pygame.draw.rect(self.screen, color, pygame.Rect(self.width*1/3, 0, self.width/3*(1-self.used/self.battery), 60))
-        pygame.draw.rect(self.screen, color, pygame.Rect(self.width*1/3, 0, self.width/3*(1-self.used/self.battery), 60))
 
         # use native pygame functions to convert to a pixel array
         self.arr = pygame.surfarray.array3d(self.background)
-
 
         #if a < self.arr.shape[0] - self.radius and b < self.arr.shape[1] + self.radius:
         if lighton and random.random()<0.95 and self.used/self.battery<1:
@@ -75,3 +80,24 @@ class GameScreen:
             self.background = pygame.image.load(r"images\first_room.png")
             self.background = pygame.transform.scale(self.background, (self.width, self.height))
             self.used /= 2
+    def turning(self,rotation_point,radiusmin,radiusmax,mousepoint):
+
+        radius=((mousepoint[1]-rotation_point[1])**2+(mousepoint[0]-rotation_point[0])**2)**0.5
+        nowangle=degrees(atan((mousepoint[1]-rotation_point[1])/(0.001+(mousepoint[0]-rotation_point[0]))))
+        if nowangle==self.prevangleis:
+            self.waittime+=1
+        else:
+            self.waittime=0
+        if radiusmax>=radius and radius>=radiusmin and ((nowangle<=self.prevangleis and nowangle<=0) or (self.prevangleis>=nowangle and nowangle>=0) or abs(nowangle)==90 ) and self.waittime<10:
+            pygame.draw.circle(self.screen, (0,255,0), rotation_point, radiusmax,radiusmax-radiusmin)
+            self.start+=1# (r, g, b) is color, (x, y) is center, R is radius and w is the thickness of the circle border.
+        else:
+            if self.start>2:
+                self.start/=1.2
+
+            pygame.draw.circle(self.screen, (255,0,0), rotation_point, radiusmax,radiusmax-radiusmin) # (r, g, b) is color, (x, y) is center, R is radius and w is the thickness of the circle border.
+
+        self.prevangleis=nowangle
+        print(self.start)
+
+        pass
