@@ -4,6 +4,7 @@ from game.screens.title import TitleScreen
 from game.screens.spaceship import GameScreen
 from pygame import gfxdraw, mixer
 import numpy as np
+from mpmath import *
 
 mixer.init()
 song = mixer.music.load(r"game\sounds\flashlight.mp3")
@@ -16,6 +17,8 @@ class Game:
         self.screen = pygame.display.set_mode(self.window_size)
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 50)
+        self.frames = 0
+        self.previous_second = 0
 
         self.title_screen = TitleScreen(width, height)
         self.game_screen=GameScreen(width,height)
@@ -24,11 +27,17 @@ class Game:
         self.radius=30
         self.clicked=0
     def run(self):
+        self.start_ticks = 0
         while True:
             self.clock.tick(60)
             self.handle_events()
             self.update()
             self.draw()
+            if self.is_playing:
+                if self.start_ticks == 0:
+                    self.start_ticks = pygame.time.get_ticks()
+
+                self.game_screen.why(self.start_ticks)
 
     def handle_events(self):
         for event in pygame.event.get():

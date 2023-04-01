@@ -11,6 +11,8 @@ class GameScreen:
         self.height = height
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.font = pygame.font.Font(None, 50)
+        self.seconds = 0
+        self.previous_second = 0
 
         self.arr = []
         self.backgrounds=[]
@@ -45,7 +47,7 @@ class GameScreen:
         self.pos = (random.randint(0, 520), random.randint(0, 400))
         self.c, self.d = self.pos[0], self.pos[1]
 
-    def display(self,lighton,radius, clicked):
+    def display(self,lighton,radius,clicked):
         self.screen.fill([0, 0, 0])
         self.clicked = clicked
 
@@ -92,6 +94,7 @@ class GameScreen:
                 self.background = pygame.image.load(r"game\images\first_room.png")
                 self.background = pygame.transform.scale(self.background, (self.width, self.height))
                 self.used /= 2
+                self.battery_spawn = True
     def turning(self,rotation_point,radiusmin,radiusmax,mousepoint):
 
         radius=((mousepoint[1]-rotation_point[1])**2+(mousepoint[0]-rotation_point[0])**2)**0.5
@@ -119,6 +122,24 @@ class GameScreen:
             if self.clicked:
                 self.battery_spawn = False
                 self.used = 0
-                self.background = pygame.image.load(r"pyweek\BersFork2\game\images\first_room.png")
+                self.background = pygame.image.load(r"game\images\first_room.png")
                 self.background = pygame.transform.scale(self.background, (self.width, self.height))
                 self.pos = (-100, -100)
+
+    def why(self, start_ticks):
+        self.seconds=(pygame.time.get_ticks()-start_ticks)/1000
+
+        if int(ceil(self.seconds)) > self.previous_second:
+                print(int(ceil(self.seconds)))
+                self.previous_second = int(ceil(self.seconds))
+
+                self.background = pygame.image.load(r"game\images\first_room.png")
+                self.background = pygame.transform.scale(self.background, (self.width, self.height))
+
+                self.screen.fill((0, 0, 0))
+
+        self.time_text = self.font.render(f"{30-int(self.seconds)}", True, (255, 255, 255))
+            
+        self.time_left  = self.time_text.get_rect(center=(570, 40))
+        self.screen.blit(self.time_text, self.time_left)
+        self.background.blit(self.time_text, self.time_left)
