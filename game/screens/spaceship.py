@@ -1,8 +1,9 @@
 
 import pygame
 import random
+from mpmath import *
 
-pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067
+pi = 3.1415926535897932384626433832795028841971693993751#05820974944592307816406286208998628034825342117067
 
 class GameScreen:
     def __init__(self, width, height):
@@ -14,11 +15,11 @@ class GameScreen:
         self.arr = []
         self.backgrounds=[]
 
-        self.background = pygame.image.load(r"pyweek\BersFork2\game\images\first_room.png")
+        self.background = pygame.image.load(r"game\images\first_room.png")
         self.backgrounds.append(self.background)
         self.background = pygame.transform.scale(self.background, (width, height))
 
-        key = pygame.image.load(r"pyweek\BersFork2\game\images\key.png")
+        key = pygame.image.load(r"game\images\key.png")
         self.key = pygame.transform.scale(key, (25, 30))
         self.battery=10000000
         self.used=0
@@ -28,31 +29,31 @@ class GameScreen:
         self.widthkey=25
         self.heightkey=30
 
-        powerbox = pygame.image.load(r"pyweek\BersFork2\game\images\power_box.png")
+        powerbox = pygame.image.load(r"game\images\power_box.png")
         self.powerbox = pygame.transform.scale(powerbox, (160, 200)) # This goes at (320, 180)
 
-        self.deathText = pygame.image.load(r"pyweek\BersFork2\game\images\death_text.png")
+        self.deathText = pygame.image.load(r"game\images\death_text.png")
         self.deathText = pygame.transform.scale(self.deathText, (604, 480))
         self.prevangleis=0
         self.tentatives=40
         self.start=0
         self.waittimes=0
 
-        battery = pygame.image.load(r"pyweek\BersFork2\game\images\battery.png")
+        battery = pygame.image.load(r"game\images\battery.png")
         self.battery_other = pygame.transform.scale(battery, (70, 52))
         self.battery_spawn = False
         self.pos = (random.randint(0, 520), random.randint(0, 400))
         self.c, self.d = self.pos[0], self.pos[1]
 
-    def display(self,lighton,radius):
+    def display(self,lighton,radius, clicked):
         self.screen.fill([0, 0, 0])
+        self.clicked = clicked
 
         a, b = pygame.mouse.get_pos()
         self.a, self.b = a, b
         # put objects onto the background before calling array3d()
         if not self.gotkey:
             self.background.blit(self.key, (self.xkey, self.ykey))
-            self.background.blit(self.powerbox, (320, 180))
             self.clickedkey(a,b)
 
         color = (255*self.used/self.battery, 255*(1-self.used/self.battery), 0)
@@ -86,10 +87,11 @@ class GameScreen:
 
     def clickedkey(self,a,b):
         if a>self.xkey and a<self.widthkey+self.xkey and b>self.ykey and b<self.heightkey+self.ykey:
-            self.gotkey=1
-            self.background = pygame.image.load(r"pyweek\game\images\first_room.png")
-            self.background = pygame.transform.scale(self.background, (self.width, self.height))
-            self.used /= 2
+            if self.clicked:
+                self.gotkey=1
+                self.background = pygame.image.load(r"game\images\first_room.png")
+                self.background = pygame.transform.scale(self.background, (self.width, self.height))
+                self.used /= 2
     def turning(self,rotation_point,radiusmin,radiusmax,mousepoint):
 
         radius=((mousepoint[1]-rotation_point[1])**2+(mousepoint[0]-rotation_point[0])**2)**0.5
@@ -114,8 +116,9 @@ class GameScreen:
 
     def clickedbattery(self, a, b, c, d):
         if a>c and a<70+c and b>d and b<52+d:
-            self.battery_spawn = False
-            self.used = 0
-            self.background = pygame.image.load(r"pyweek\BersFork2\game\images\first_room.png")
-            self.background = pygame.transform.scale(self.background, (self.width, self.height))
-            self.pos = (-100, -100)
+            if self.clicked:
+                self.battery_spawn = False
+                self.used = 0
+                self.background = pygame.image.load(r"pyweek\BersFork2\game\images\first_room.png")
+                self.background = pygame.transform.scale(self.background, (self.width, self.height))
+                self.pos = (-100, -100)

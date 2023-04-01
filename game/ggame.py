@@ -2,8 +2,12 @@ import sys
 import pygame
 from game.screens.title import TitleScreen
 from game.screens.spaceship import GameScreen
-from pygame import gfxdraw
+from pygame import gfxdraw, mixer
 import numpy as np
+
+mixer.init()
+song = mixer.music.load(r"game\sounds\flashlight.mp3")
+
 class Game:
     def __init__(self, width=604, height=480, caption="In The Shadows"):
         pygame.init()
@@ -36,6 +40,7 @@ class Game:
                     self.is_playing=1-self.is_playing
                 elif event.key==pygame.K_f:
                     self.lighton=1-self.lighton
+                    mixer.music.play()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button==4 or event.button==5:
                     if event.button == 4 and self.radius<80:
@@ -51,9 +56,8 @@ class Game:
 
     def draw(self):
         if self.is_playing:
-            self.game_screen.display(self.lighton,self.radius,self.clicked)
+            self.game_screen.display(self.lighton, self.radius, self.clicked)
         else:
             self.title_screen.display()
 
         pygame.display.flip()
-
