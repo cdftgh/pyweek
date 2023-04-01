@@ -1,8 +1,8 @@
 
 import pygame
 import random
-from mpmath import *
-pi = 3.1415926535897932384626433832795028841971693#99375105820974944592307816406286208998628034825342117067
+
+pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067
 
 class GameScreen:
     def __init__(self, width, height):
@@ -24,7 +24,7 @@ class GameScreen:
         self.used=0
         self.xkey=random.randint(0,self.width-30)
         self.ykey=random.randint(0,self.height-30)
-        self.gotkey=0
+        self.gotkey=False
         self.widthkey=25
         self.heightkey=30
 
@@ -44,20 +44,16 @@ class GameScreen:
         self.pos = (random.randint(0, 520), random.randint(0, 400))
         self.c, self.d = self.pos[0], self.pos[1]
 
-    def display(self,lighton,radius,clicked):
+    def display(self,lighton,radius):
         self.screen.fill([0, 0, 0])
 
         a, b = pygame.mouse.get_pos()
         self.a, self.b = a, b
         # put objects onto the background before calling array3d()
-        if not self.gotkey :
+        if not self.gotkey:
             self.background.blit(self.key, (self.xkey, self.ykey))
-            if clicked:
-                self.clickedkey(a,b)
-        else:
-            if self.tentatives > 0:
-                self.turning((300, 200), 30, 60, (a, b))
-                self.battery_spawn = True
+            self.background.blit(self.powerbox, (320, 180))
+            self.clickedkey(a,b)
 
         color = (255*self.used/self.battery, 255*(1-self.used/self.battery), 0)
         
@@ -91,7 +87,7 @@ class GameScreen:
     def clickedkey(self,a,b):
         if a>self.xkey and a<self.widthkey+self.xkey and b>self.ykey and b<self.heightkey+self.ykey:
             self.gotkey=1
-            self.background = pygame.image.load(r"pyweek\BersFork2\game\images\first_room.png")
+            self.background = pygame.image.load(r"pyweek\game\images\first_room.png")
             self.background = pygame.transform.scale(self.background, (self.width, self.height))
             self.used /= 2
     def turning(self,rotation_point,radiusmin,radiusmax,mousepoint):
