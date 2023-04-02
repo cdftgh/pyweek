@@ -21,7 +21,7 @@ class Game:
         self.frames = 0
         self.previous_second = 0
 
-        self.dh = DisplayHelp(width, height)
+        self.dh = DisplayHelp()
         self.help = 0
 
         self.title_screen = TitleScreen(width, height)
@@ -47,6 +47,7 @@ class Game:
 
     def handle_events(self):
         for event in pygame.event.get():
+            self.keys = pygame.key.get_pressed()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()

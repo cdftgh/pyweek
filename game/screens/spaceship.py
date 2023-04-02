@@ -5,6 +5,7 @@ from mpmath import *
 from pygame import mixer
 
 mixer.init()
+mixer.Channel(1).set_volume(1)
 
 pi = 3.1415926535897932384626433832795028841971693993751#05820974944592307816406286208998628034825342117067
 
@@ -159,6 +160,9 @@ class GameScreen:
                     self.crowbar_img = pygame.transform.scale(self.crowbar_img, (580, 110))
                 self.drawer_open = True
 
+            elif self.gotkey == False and self.clicked:
+                mixer.Channel(1).play(mixer.Sound(r"game\sounds\you_need_a_key_to_open_this.mp3"))
+
         if self.py_keys[pygame.K_BACKSPACE] and self.drawer_open:
             self.background = pygame.image.load(r"game\images\first_room.png")
             self.drawer_open = False
@@ -179,7 +183,7 @@ class GameScreen:
             self.open_powerbox = True
 
         elif self.crowbar==False:
-            mixer.Channel(1).play(mixer.Sound(r""))
+            mixer.Channel(1).play(mixer.Sound(r"game\sounds\You_need_a_crowbar_to_open_this.mp3"))
 
     def why(self, start_ticks):
         self.seconds=(pygame.time.get_ticks()-start_ticks)/1000
