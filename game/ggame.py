@@ -9,7 +9,7 @@ from game.screens.displayhelp import DisplayHelp
 
 mixer.init()
 mixer.Channel(1).set_volume(0.2)
-mixer.Channel(0).set_volume(0.1)
+mixer.Channel(0).set_volume(0.05)
 
 class Game:
     def __init__(self, width=604, height=480, caption="Space Repair"):
@@ -34,7 +34,7 @@ class Game:
         self.radius=30
         self.clicked=0
 
-        mixer.Channel(0).play(mixer.Sound(r"game\sounds\Baja Mali Knindza - Tata - (Audio 1993).mp3"))
+        mixer.Channel(0).play(mixer.Sound(r"game\sounds\onlymp3_mp3cut.net_1.mp3"), -1)
 
     def run(self):
         self.start_ticks = 0

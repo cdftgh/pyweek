@@ -126,6 +126,7 @@ class GameScreen:
 
         if self.E:
             self.seconds = 20.0
+            self.used = 0
             self.screen.blit(self.winText, (0, 0))
 
     def see(self, screen, a, b, radius, pixels):
