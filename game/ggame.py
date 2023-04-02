@@ -39,8 +39,11 @@ class Game:
 
                 self.game_screen.why(self.start_ticks)
 
+            self.game_screen.get_keys(self.keys)
+
     def handle_events(self):
         for event in pygame.event.get():
+            self.keys = pygame.key.get_pressed()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()

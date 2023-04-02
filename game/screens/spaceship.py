@@ -14,6 +14,10 @@ class GameScreen:
         self.seconds = 0
         self.previous_second = 0
 
+        self.drawer_open = False
+        self.crowbar = False
+        self.py_keys = []
+
         self.arr = []
         self.backgrounds=[]
 
@@ -66,6 +70,16 @@ class GameScreen:
             if self.battery_spawn:
                 if clicked:
                     self.clickedbattery(self.a, self.b, self.c, self.d)
+
+        self.clickeddrawer()
+
+        if self.drawer_open:
+            try:
+                self.background.blit(self.crowbar_img, (40, 0))
+            except TypeError:
+                pass
+
+        self.clickedcrowbar()
 
         # Drawing Rectangle
         pygame.draw.rect(self.screen, color, pygame.Rect(self.width*1/3, 0, self.width/3*(1-self.used/self.battery), 60))
@@ -127,14 +141,47 @@ class GameScreen:
                 self.background = pygame.transform.scale(self.background, (self.width, self.height))
                 self.pos = (-100, -100)
 
+    def clickeddrawer(self):
+        if self.a>=21 and self.a<=174 and self.b>=174 and self.b<=247:
+            if self.clicked and self.gotkey:
+                self.background = pygame.image.load(r"game\images\drawer.png")
+                self.background = pygame.transform.scale(self.background, (604, 480))
+                if self.crowbar==False:
+                    self.crowbar_img = pygame.image.load(r"game\images\crowbar.png")
+                    self.crowbar_img = pygame.transform.scale(self.crowbar_img, (580, 110))
+                self.drawer_open = True
+
+        if self.py_keys[pygame.K_BACKSPACE] and self.drawer_open:
+            self.background = pygame.image.load(r"game\images\first_room.png")
+            self.drawer_open = False
+
+    def clickedcrowbar(self):
+        if self.b<111 and self.clicked:
+            self.crowbar=True
+            self.crowbar_img=None
+            self.background = pygame.image.load(r"game\images\drawer.png")
+            self.background = pygame.transform.scale(self.background, (604, 480))
+
+    def open_pb(self):
+        power_box=pygame.image.load(r"game\images\powebox.png")
+        self.power_box=pygame.transform.scale(power_box, (160, 223))
+
+    def displayopenpowerbox(self):
+            if self.crowbar==True:
+                self.screen.blit(self.power_box,(392,72))
+
+
     def why(self, start_ticks):
         self.seconds=(pygame.time.get_ticks()-start_ticks)/1000
 
         if int(ceil(self.seconds)) > self.previous_second:
-                print(int(ceil(self.seconds)))
                 self.previous_second = int(ceil(self.seconds))
 
-                self.background = pygame.image.load(r"game\images\first_room.png")
+                if self.drawer_open:
+                    self.background = pygame.image.load(r"game\images\drawer.png")
+                
+                else:
+                    self.background = pygame.image.load(r"game\images\first_room.png")
                 self.background = pygame.transform.scale(self.background, (self.width, self.height))
 
                 self.screen.fill([0, 0, 0])
@@ -145,3 +192,6 @@ class GameScreen:
         self.time_left  = self.time_text.get_rect(center=(570, 40))
         self.screen.blit(self.time_text, self.time_left)
         self.background.blit(self.time_text, self.time_left)
+
+    def get_keys(self, keys):
+        self.py_keys = keys
