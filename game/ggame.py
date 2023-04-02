@@ -5,7 +5,7 @@ from game.screens.spaceship import GameScreen
 from pygame import gfxdraw, mixer
 import numpy as np
 from mpmath import *
-from screens.displayhelp import DisplayHelp
+from game.screens.displayhelp import DisplayHelp
 
 mixer.init()
 mixer.Channel(1).set_volume(0.2)
@@ -20,6 +20,9 @@ class Game:
         self.font = pygame.font.Font(None, 50)
         self.frames = 0
         self.previous_second = 0
+
+        self.dh = DisplayHelp(width, height)
+        self.help = 0
 
         self.title_screen = TitleScreen(width, height)
         self.game_screen=GameScreen(width,height)
@@ -44,12 +47,13 @@ class Game:
 
     def handle_events(self):
         for event in pygame.event.get():
-            self.keys = pygame.key.get_pressed()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key==pygame.K_h:
+                    self.help=1-self.help
+                elif event.key == pygame.K_SPACE:
                     self.is_playing=1-self.is_playing
                     self.screen.fill((0, 0, 0))
                 elif event.key==pygame.K_f:
@@ -69,7 +73,9 @@ class Game:
         pass
 
     def draw(self):
-        if self.is_playing:
+        if self.help:
+            self.dh.display()
+        elif self.is_playing:
             self.game_screen.display(self.lighton, self.radius, self.clicked)
         else:
             self.title_screen.display()

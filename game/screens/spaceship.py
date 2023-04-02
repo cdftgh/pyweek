@@ -175,8 +175,11 @@ class GameScreen:
         self.power_box=pygame.transform.scale(power_box, (160, 223))
 
     def displayopenpowerbox(self):
-            if self.crowbar==True and self.clicked and self.a<392+160 and self.a>392 and self.b<72+223 and self.b>72:
-                self.open_powerbox = True
+        if self.crowbar and self.clicked and self.a<392+160 and self.a>392 and self.b<72+223 and self.b>72:
+            self.open_powerbox = True
+
+        elif self.crowbar==False:
+            mixer.Channel(1).play(mixer.Sound(r""))
 
     def why(self, start_ticks):
         self.seconds=(pygame.time.get_ticks()-start_ticks)/1000
