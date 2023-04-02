@@ -63,6 +63,9 @@ class GameScreen:
         self.start=0
         self.waittimes=0
 
+        self.winText = pygame.image.load(r"game\images\victory.png")
+        self.winText = pygame.transform.scale(self.winText, (self.width, self.height))
+
         self.screen.fill([0, 0, 0])
 
         battery = pygame.image.load(r"game\images\battery.png")
@@ -120,6 +123,10 @@ class GameScreen:
             
         elif self.used/self.battery>=1 or ceil(int(self.seconds)) >= 30:
             self.screen.blit(self.deathText, (0, 0))
+
+        if self.E:
+            self.seconds = 20.0
+            self.screen.blit(self.winText, (0, 0))
 
     def see(self, screen, a, b, radius, pixels):
         for i in range(max(0,a - radius),min(self.arr.shape[0], a + radius)):
@@ -207,7 +214,6 @@ class GameScreen:
     def clickedpowebox(self):
         if self.clicked and self.a<392+160 and self.a>392 and self.b<72+223 and self.b>72 and self.crowbar:
             self.E = True
-            print("EEEEEEEEEEEEEE")
 
     def why(self, start_ticks):
         self.seconds=(pygame.time.get_ticks()-start_ticks)/1000
@@ -218,12 +224,8 @@ class GameScreen:
                 if self.drawer_open==1:
                     self.background = self.backgrounds[1]
                 
-                elif self.drawer_open==0:
+                else:
                     self.background = self.backgrounds[0]
-
-                if self.E:
-                    self.screen = pygame.image.load(r"game\images\victory.png")
-                    self.screen = pygame.transform.scale(self.screen, (604, 480))
 
                 if self.open_powerbox and self.drawer_open == 0:
                     self.background.blit(self.power_box,(392,72))
@@ -233,8 +235,8 @@ class GameScreen:
                 self.screen.fill([0, 0, 0])
 
         self.time_text = self.font.render(f"{30-int(self.seconds)}", True, (255, 255, 255))
-        if self.E==False:
-            self.screen.fill([0, 0, 0])
+
+        self.screen.fill([0, 0, 0])
             
         self.time_left  = self.time_text.get_rect(center=(570, 40))
         self.screen.blit(self.time_text, self.time_left)
