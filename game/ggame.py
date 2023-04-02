@@ -10,7 +10,7 @@ mixer.init()
 song = mixer.music.load(r"game\sounds\flashlight.mp3")
 
 class Game:
-    def __init__(self, width=604, height=480, caption="In The Shadows"):
+    def __init__(self, width=604, height=480, caption="Space Repair"):
         pygame.init()
         pygame.display.set_caption(caption)
         self.window_size=[width, height]
@@ -47,6 +47,7 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.is_playing=1-self.is_playing
+                    self.screen.fill((0, 0, 0))
                 elif event.key==pygame.K_f:
                     self.lighton=1-self.lighton
                     mixer.music.play()

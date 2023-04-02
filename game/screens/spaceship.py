@@ -41,6 +41,8 @@ class GameScreen:
         self.start=0
         self.waittimes=0
 
+        self.screen.fill([0, 0, 0])
+
         battery = pygame.image.load(r"game\images\battery.png")
         self.battery_other = pygame.transform.scale(battery, (70, 52))
         self.battery_spawn = False
@@ -48,7 +50,6 @@ class GameScreen:
         self.c, self.d = self.pos[0], self.pos[1]
 
     def display(self,lighton,radius,clicked):
-        self.screen.fill([0, 0, 0])
         self.clicked = clicked
 
         a, b = pygame.mouse.get_pos()
@@ -136,9 +137,10 @@ class GameScreen:
                 self.background = pygame.image.load(r"game\images\first_room.png")
                 self.background = pygame.transform.scale(self.background, (self.width, self.height))
 
-                self.screen.fill((0, 0, 0))
+                self.screen.fill([0, 0, 0])
 
         self.time_text = self.font.render(f"{30-int(self.seconds)}", True, (255, 255, 255))
+        self.screen.fill([0, 0, 0])
             
         self.time_left  = self.time_text.get_rect(center=(570, 40))
         self.screen.blit(self.time_text, self.time_left)
