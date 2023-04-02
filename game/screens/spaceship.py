@@ -23,7 +23,7 @@ class GameScreen:
 
         key = pygame.image.load(r"game\images\key.png")
         self.key = pygame.transform.scale(key, (25, 30))
-        self.battery=10000000
+        self.battery=5000000
         self.used=0
         self.xkey=random.randint(0,self.width-30)
         self.ykey=random.randint(0,self.height-30)
@@ -78,7 +78,7 @@ class GameScreen:
             self.used+=1*radius*radius*pi
             self.see(self.screen, a, b,radius, self.arr)
             
-        elif self.used/self.battery>=1:
+        elif self.used/self.battery>=1 or ceil(int(self.seconds)) >= 30:
             self.screen.blit(self.deathText, (0, 0))
 
     def see(self, screen, a, b, radius, pixels):

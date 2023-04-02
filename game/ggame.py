@@ -7,7 +7,7 @@ import numpy as np
 from mpmath import *
 
 mixer.init()
-song = mixer.music.load(r"game\sounds\flashlight.mp3")
+mixer.Channel(1).set_volume(0.2)
 
 class Game:
     def __init__(self, width=604, height=480, caption="Space Repair"):
@@ -50,7 +50,7 @@ class Game:
                     self.screen.fill((0, 0, 0))
                 elif event.key==pygame.K_f:
                     self.lighton=1-self.lighton
-                    mixer.music.play()
+                    mixer.Channel(1).play(mixer.Sound(r"game\sounds\flashlight.mp3"))
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button==4 or event.button==5:
                     if event.button == 4 and self.radius<80:
