@@ -2,6 +2,9 @@
 import pygame
 import random
 from mpmath import *
+from pygame import mixer
+
+mixer.init()
 
 pi = 3.1415926535897932384626433832795028841971693993751#05820974944592307816406286208998628034825342117067
 
@@ -17,6 +20,9 @@ class GameScreen:
         self.drawer_open = False
         self.crowbar = False
         self.py_keys = []
+        self.open_powerbox = False
+
+        self.open_pb()
 
         self.arr = []
         self.backgrounds=[]
@@ -27,7 +33,7 @@ class GameScreen:
 
         key = pygame.image.load(r"game\images\key.png")
         self.key = pygame.transform.scale(key, (25, 30))
-        self.battery=5000000
+        self.battery=10000000
         self.used=0
         self.xkey=random.randint(0,self.width-30)
         self.ykey=random.randint(0,self.height-30)
@@ -80,6 +86,8 @@ class GameScreen:
                 pass
 
         self.clickedcrowbar()
+
+        self.displayopenpowerbox()
 
         # Drawing Rectangle
         pygame.draw.rect(self.screen, color, pygame.Rect(self.width*1/3, 0, self.width/3*(1-self.used/self.battery), 60))
@@ -167,9 +175,8 @@ class GameScreen:
         self.power_box=pygame.transform.scale(power_box, (160, 223))
 
     def displayopenpowerbox(self):
-            if self.crowbar==True:
-                self.screen.blit(self.power_box,(392,72))
-
+            if self.crowbar==True and self.clicked and self.a<392+160 and self.a>392 and self.b<72+223 and self.b>72:
+                self.open_powerbox = True
 
     def why(self, start_ticks):
         self.seconds=(pygame.time.get_ticks()-start_ticks)/1000
@@ -182,6 +189,10 @@ class GameScreen:
                 
                 else:
                     self.background = pygame.image.load(r"game\images\first_room.png")
+
+                if self.open_powerbox:
+                    self.background.blit(self.power_box,(392,72))
+
                 self.background = pygame.transform.scale(self.background, (self.width, self.height))
 
                 self.screen.fill([0, 0, 0])

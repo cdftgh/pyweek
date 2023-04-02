@@ -5,6 +5,7 @@ from game.screens.spaceship import GameScreen
 from pygame import gfxdraw, mixer
 import numpy as np
 from mpmath import *
+from screens.displayhelp import DisplayHelp
 
 mixer.init()
 mixer.Channel(1).set_volume(0.2)
