@@ -1,16 +1,16 @@
 import pygame
 
 class TitleScreen:
-    def __init__(self, width, height):
+    def __init__(self, width = 604, height = 480):
         self.width = width
         self.height = height
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.font = pygame.font.Font(None, 50)
 
-        self.title_text = self.font.render("Space Repair", True, (0, 0, 0))
+        self.title_text = self.font.render("Space Repair", True, (255, 255, 255))
 
-        self.play_text = self.font.render("Press SPACE to Play", True, (0, 0, 0))
-        self.play_info = self.font.render("press f to activate light", True, (0, 0, 0))
+        self.play_text = self.font.render("Press SPACE to Play, H for help", True, (255, 255, 255))
+        self.play_info = self.font.render("press f to activate light", True, (255, 255, 255))
 
         self.bg_pic = pygame.image.load(r"game\images\title_bg.png")
         self.bg_pic = pygame.transform.scale(self.bg_pic, (self.width, self.height))

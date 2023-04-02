@@ -17,11 +17,15 @@ class GameScreen:
         self.font = pygame.font.Font(None, 50)
         self.seconds = 0
         self.previous_second = 0
+        self.E = False
 
-        self.drawer_open = False
+        self.drawer_open = 0
         self.crowbar = False
         self.py_keys = []
         self.open_powerbox = False
+
+        self.crowbar_sound = True
+        self.key_sound = True
 
         self.open_pb()
 
@@ -31,6 +35,13 @@ class GameScreen:
         self.background = pygame.image.load(r"game\images\first_room.png")
         self.backgrounds.append(self.background)
         self.background = pygame.transform.scale(self.background, (width, height))
+
+        self.drawer_bg = pygame.image.load(r"game\images\drawer.png")
+        self.backgrounds.append(self.drawer_bg)
+
+        self.victory_bg = pygame.image.load(r"game\images\victory.png")
+        self.victory_bg = pygame.transform.scale(self.victory_bg, (604, 480))
+        self.backgrounds.append(self.victory_bg)
 
         key = pygame.image.load(r"game\images\key.png")
         self.key = pygame.transform.scale(key, (25, 30))
@@ -46,7 +57,7 @@ class GameScreen:
         self.powerbox = pygame.transform.scale(powerbox, (160, 200)) # This goes at (320, 180)
 
         self.deathText = pygame.image.load(r"game\images\death_text.png")
-        self.deathText = pygame.transform.scale(self.deathText, (604, 480))
+        self.deathText = pygame.transform.scale(self.deathText, (self.width, self.height))
         self.prevangleis=0
         self.tentatives=40
         self.start=0
@@ -62,6 +73,10 @@ class GameScreen:
 
     def display(self,lighton,radius,clicked):
         self.clicked = clicked
+
+        if mixer.Channel(1).get_busy() == False:
+            self.crowbar_sound = True
+            self.key_sound = True
 
         a, b = pygame.mouse.get_pos()
         self.a, self.b = a, b
@@ -80,7 +95,7 @@ class GameScreen:
 
         self.clickeddrawer()
 
-        if self.drawer_open:
+        if self.drawer_open==1:
             try:
                 self.background.blit(self.crowbar_img, (40, 0))
             except TypeError:
@@ -89,6 +104,8 @@ class GameScreen:
         self.clickedcrowbar()
 
         self.displayopenpowerbox()
+
+        self.clickedpowebox()
 
         # Drawing Rectangle
         pygame.draw.rect(self.screen, color, pygame.Rect(self.width*1/3, 0, self.width/3*(1-self.used/self.battery), 60))
@@ -115,7 +132,7 @@ class GameScreen:
         if a>self.xkey and a<self.widthkey+self.xkey and b>self.ykey and b<self.heightkey+self.ykey:
             if self.clicked:
                 self.gotkey=1
-                self.background = pygame.image.load(r"game\images\first_room.png")
+                self.background = self.backgrounds[0]
                 self.background = pygame.transform.scale(self.background, (self.width, self.height))
                 self.used /= 2
                 self.battery_spawn = True
@@ -146,44 +163,51 @@ class GameScreen:
             if self.clicked:
                 self.battery_spawn = False
                 self.used = 0
-                self.background = pygame.image.load(r"game\images\first_room.png")
+                self.background = self.backgrounds[0]
                 self.background = pygame.transform.scale(self.background, (self.width, self.height))
                 self.pos = (-100, -100)
 
     def clickeddrawer(self):
         if self.a>=21 and self.a<=174 and self.b>=174 and self.b<=247:
             if self.clicked and self.gotkey:
-                self.background = pygame.image.load(r"game\images\drawer.png")
-                self.background = pygame.transform.scale(self.background, (604, 480))
+                self.background = self.backgrounds[1]
+                self.background = pygame.transform.scale(self.background, (self.width, self.height))
                 if self.crowbar==False:
                     self.crowbar_img = pygame.image.load(r"game\images\crowbar.png")
                     self.crowbar_img = pygame.transform.scale(self.crowbar_img, (580, 110))
-                self.drawer_open = True
+                self.drawer_open = 1
 
-            elif self.gotkey == False and self.clicked:
+            elif self.gotkey == False and self.clicked and self.key_sound:
                 mixer.Channel(1).play(mixer.Sound(r"game\sounds\you_need_a_key_to_open_this.mp3"))
+                self.key_sound = False
 
-        if self.py_keys[pygame.K_BACKSPACE] and self.drawer_open:
-            self.background = pygame.image.load(r"game\images\first_room.png")
-            self.drawer_open = False
+        if self.py_keys[pygame.K_BACKSPACE] and self.drawer_open==1:
+            self.background = self.backgrounds[0]
+            self.drawer_open = 0
 
     def clickedcrowbar(self):
-        if self.b<111 and self.clicked:
+        if self.b<111 and self.clicked and self.drawer_open==1:
             self.crowbar=True
-            self.crowbar_img=None
-            self.background = pygame.image.load(r"game\images\drawer.png")
-            self.background = pygame.transform.scale(self.background, (604, 480))
+            self.background = self.backgrounds[1]
+            self.drawer_open = 0
+            self.background = pygame.transform.scale(self.background, (self.width, self.height))
 
     def open_pb(self):
         power_box=pygame.image.load(r"game\images\powebox.png")
         self.power_box=pygame.transform.scale(power_box, (160, 223))
 
     def displayopenpowerbox(self):
-        if self.crowbar and self.clicked and self.a<392+160 and self.a>392 and self.b<72+223 and self.b>72:
+        if self.crowbar and self.clicked and self.a<392+160 and self.a>392 and self.b<72+223 and self.b>72 and self.drawer_open==0:
             self.open_powerbox = True
 
-        elif self.crowbar==False:
+        elif self.crowbar_sound and self.crowbar==False and self.clicked and self.a<392+160 and self.a>392 and self.b<72+223 and self.b>72:
             mixer.Channel(1).play(mixer.Sound(r"game\sounds\You_need_a_crowbar_to_open_this.mp3"))
+            self.crowbar_sound = False
+
+    def clickedpowebox(self):
+        if self.clicked and self.a<392+160 and self.a>392 and self.b<72+223 and self.b>72 and self.crowbar:
+            self.E = True
+            print("EEEEEEEEEEEEEE")
 
     def why(self, start_ticks):
         self.seconds=(pygame.time.get_ticks()-start_ticks)/1000
@@ -191,13 +215,17 @@ class GameScreen:
         if int(ceil(self.seconds)) > self.previous_second:
                 self.previous_second = int(ceil(self.seconds))
 
-                if self.drawer_open:
-                    self.background = pygame.image.load(r"game\images\drawer.png")
+                if self.drawer_open==1:
+                    self.background = self.backgrounds[1]
                 
-                else:
-                    self.background = pygame.image.load(r"game\images\first_room.png")
+                elif self.drawer_open==0:
+                    self.background = self.backgrounds[0]
 
-                if self.open_powerbox:
+                if self.E:
+                    self.screen = pygame.image.load(r"game\images\victory.png")
+                    self.screen = pygame.transform.scale(self.screen, (604, 480))
+
+                if self.open_powerbox and self.drawer_open == 0:
                     self.background.blit(self.power_box,(392,72))
 
                 self.background = pygame.transform.scale(self.background, (self.width, self.height))
@@ -205,7 +233,8 @@ class GameScreen:
                 self.screen.fill([0, 0, 0])
 
         self.time_text = self.font.render(f"{30-int(self.seconds)}", True, (255, 255, 255))
-        self.screen.fill([0, 0, 0])
+        if self.E==False:
+            self.screen.fill([0, 0, 0])
             
         self.time_left  = self.time_text.get_rect(center=(570, 40))
         self.screen.blit(self.time_text, self.time_left)

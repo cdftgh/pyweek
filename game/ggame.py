@@ -9,6 +9,7 @@ from game.screens.displayhelp import DisplayHelp
 
 mixer.init()
 mixer.Channel(1).set_volume(0.2)
+mixer.Channel(0).set_volume(0.1)
 
 class Game:
     def __init__(self, width=604, height=480, caption="Space Repair"):
@@ -21,7 +22,9 @@ class Game:
         self.frames = 0
         self.previous_second = 0
 
-        self.dh = DisplayHelp()
+        self.keys = pygame.key.get_pressed()
+
+        self.dh = DisplayHelp(width, height)
         self.help = 0
 
         self.title_screen = TitleScreen(width, height)
@@ -30,6 +33,9 @@ class Game:
         self.lighton=1
         self.radius=30
         self.clicked=0
+
+        mixer.Channel(0).play(mixer.Sound(r"game\sounds\Baja Mali Knindza - Tata - (Audio 1993).mp3"))
+
     def run(self):
         self.start_ticks = 0
         while True:
@@ -47,7 +53,6 @@ class Game:
 
     def handle_events(self):
         for event in pygame.event.get():
-            self.keys = pygame.key.get_pressed()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
